@@ -37,6 +37,5 @@ public class Runner {
             }
         }
         System.out.printf(Constants.OUTPUT_LINE, sum , errorLines);
-
     }
 }
