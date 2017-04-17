@@ -14,28 +14,33 @@ public class Runner {
         String indexValue;
         String key;
         String requiredValue;
+        Pattern pattern = Pattern.compile(Constants.CORRECT_INDEX);
         while (keys.hasMoreElements()){
-            try{
-                key = keys.nextElement();
-                if (key.matches(Constants.LINES_STARTS_WITH_INDEX)){
-                    Pattern pattern = Pattern.compile(Constants.CORRECT_INDEX_LINE);
-                    Matcher matcher = pattern.matcher(key);
-                    if (matcher.find()){
-                        indexValue = rb.getString(key);
-                        if (indexValue.matches(Constants.CORRECT_INDEX_VALUE)){
-                            requiredValue = rb.getString(Constants.VALUE + matcher.group(1) + indexValue);
-                                sum += Double.parseDouble(requiredValue);
+            key = keys.nextElement();
+            Matcher matcher = pattern.matcher(key);
+            if (matcher.find()){
+                if (!matcher.group(3).isEmpty() && matcher.group(2).isEmpty() && matcher.group(4).isEmpty()){
+                    try{
+                        indexValue = rb.getString(key).trim();
+                        if (checkNumber(indexValue)){
+                            requiredValue = rb.getString(Constants.VALUE + matcher.group(3) + indexValue).trim();
+                            sum += Double.parseDouble(requiredValue);
                         }else {
                             errorLines++;
                         }
-                    }else {
+                    }catch (MissingResourceException |NumberFormatException e){
                         errorLines++;
                     }
+                }else {
+                    errorLines++;
                 }
-            }catch (MissingResourceException|NumberFormatException e){
-                errorLines++;
             }
         }
         System.out.printf(Constants.OUTPUT_LINE, sum , errorLines);
+    }
+    private static boolean checkNumber(String number){
+        Pattern pattern = Pattern.compile(Constants.NUMBER_PATTERN);
+        Matcher matcher = pattern.matcher(number);
+        return matcher.find() && matcher.group(1).isEmpty() && matcher.group(3).isEmpty() && !matcher.group(2).isEmpty();
     }
 }
