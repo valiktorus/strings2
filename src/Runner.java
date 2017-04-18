@@ -23,14 +23,14 @@ public class Runner {
             if (!key.startsWith(INDEX)) {
                 continue;
             }
-            Matcher matcher = INDEX_PATTERN.matcher( key );
+            Matcher matcher = INDEX_PATTERN.matcher(key);
             if (isInvalidValue(matcher)) {
                 errorLines++;
                 continue;
             }
             String indexValue = matcher.group(VALUE_GROUP);
             try {
-                String value = rb.getString( key ).trim();
+                String value = rb.getString(key).trim();
                 matcher = VALUE_PATTERN.matcher(value);
                 if (isInvalidValue(matcher)) {
                     errorLines++;
