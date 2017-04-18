@@ -7,8 +7,8 @@ import java.util.regex.Pattern;
 
 public class Runner {
     private static final int VALUE_GROUP = 1;
-    private static final int NOT_VALID_PART_GROUP = 3;
-    private static final String REGEX = "^%s(([1-9]|[^0][0-9]+) | (.*?))$";
+    private static final int NOT_VALID_PART_GROUP = 2;
+    private static final String REGEX = "^%s([1-9]\\d*)|(.*)";
     private static final String INDEX = "index";
     private static final Pattern INDEX_PATTERN = Pattern.compile(String.format(REGEX, INDEX));
     private static final Pattern VALUE_PATTERN = Pattern.compile(String.format(REGEX, ""));
