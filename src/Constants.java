@@ -1,10 +1,13 @@
+import java.util.regex.Pattern;
+
 public class Constants {
     public static final String PROPERTY_FILE = "in1";
-    public static final String LINES_STARTS_WITH_INDEX = "index.*";
-    public static final String NUMBER_PATTERN = "(.*?)([1-9]\\d*)(.*)";
-    public static final String CORRECT_INDEX = "^(index)" + NUMBER_PATTERN;
-
-    public static final String CORRECT_INDEX_VALUE = "^[1-9]\\d*$";
     public static final String VALUE = "value";
     public static final String OUTPUT_LINE = "sum = %s%nerror-lines = %d";
+    public static final int VALUE_GROUP = 1;
+    public static final int NOT_VALID_PART_GROUP = 2;
+    public static final String REGEX = "^%s([1-9]\\d*)|(.*?)$";
+    public static final String INDEX = "index";
+    public static final Pattern INDEX_PATTERN = Pattern.compile(String.format(REGEX, INDEX));
+    public static final Pattern VALUE_PATTERN = Pattern.compile(String.format(REGEX, ""));
 }
