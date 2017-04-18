@@ -6,7 +6,49 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 public class Runner {
+    private static final int VALUE_GROUP = 1;
+    private static final int NOT_VALID_PART_GROUP = 3;
+    private static final String REGEX = "^%s(([1-9]|[^0][0-9]+) | (.*?))$";
+    private static final String INDEX = "index";
+    private static final Pattern INDEX_PATTERN = Pattern.compile(String.format(REGEX, INDEX));
+    private static final Pattern VALUE_PATTERN = Pattern.compile(String.format(REGEX, ""));
+
     public static void main(String[] args) {
+        ResourceBundle rb = ResourceBundle.getBundle(Constants.PROPERTY_FILE, Locale.ENGLISH);
+        Enumeration<String> keys = rb.getKeys();
+        double sum = 0;
+        int errorLines = 0;
+        while (keys.hasMoreElements()) {
+            String key = keys.nextElement();
+            if (!key.startsWith("index")) {
+                continue;
+            }
+            Matcher matcher = INDEX_PATTERN.matcher( key );
+            if (isInvalidValue(matcher)) {
+                errorLines++;
+                continue;
+            }
+            String indexValue = matcher.group(VALUE_GROUP);
+            try {
+                String value = rb.getString( key ).trim();
+                matcher = VALUE_PATTERN.matcher(value);
+                if (isInvalidValue(matcher)) {
+                    errorLines++;
+                    continue;
+                }
+                String requiredValue = rb.getString(Constants.VALUE + indexValue + matcher.group(VALUE_GROUP)).trim();
+                sum += Double.parseDouble(requiredValue);
+            } catch (MissingResourceException | NumberFormatException e){
+                errorLines++;
+            }
+        }
+        System.out.printf(Constants.OUTPUT_LINE, sum , errorLines);
+    }
+
+    private static boolean isInvalidValue(Matcher matcher) {
+        return !matcher.find() || matcher.group(NOT_VALID_PART_GROUP) != null;
+    }
+   /* public static void main(String[] args) {
         ResourceBundle rb = ResourceBundle.getBundle(Constants.PROPERTY_FILE, Locale.ENGLISH);
         Enumeration<String> keys = rb.getKeys();
         double sum = 0;
@@ -42,5 +84,5 @@ public class Runner {
         Pattern pattern = Pattern.compile(Constants.NUMBER_PATTERN);
         Matcher matcher = pattern.matcher(number);
         return matcher.find() && matcher.group(1).isEmpty() && matcher.group(3).isEmpty() && !matcher.group(2).isEmpty();
-    }
+    }*/
 }
